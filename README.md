@@ -25,24 +25,24 @@ sudo wget https://repo.zabbix.com/zabbix/6.0/debian/pool/main/z/zabbix-release/z
 sudo dpkg -i zabbix-release_latest_6.0+debian11_all.deb  
 sudo apt update  
 Установим Zabbix сервер, веб-интерфейс и агент  
-apt install zabbix-server-pgsql zabbix-frontend-php php7.4-pgsql zabbix-apache-conf zabbix-sql-scripts zabbix-agent
+apt install zabbix-server-pgsql zabbix-frontend-php php7.4-pgsql zabbix-apache-conf zabbix-sql-scripts zabbix-agent  
 проверим
 sudo systemctl status zabbix-server.service  
 <img src = "img/1-1.png" width = 60%>  
 установлен, но не запущен
-Создайте базу данных
-Создадим пользователя zabbix  
+Создаlbv базу данных  
+Создадим пользователя zabbix    
 sudo -u postgres createuser --pwprompt zabbix  
-Создадим базу zabbix для пользователя zabbix  
-sudo -u postgres createdb -O zabbix zabbix
-На хосте Zabbix сервера импортируем начальную схему и данные. 
-zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix
-Отредактируем файл /etc/zabbix/zabbix_server.conf
-sudo vim /etc/zabbix/zabbix_server.conf
-<img src = "img/1-2.png" width = 60%>    
-Запустим процессы Zabbix сервера и агента и настроим их запуск при загрузке ОС.
-systemctl restart zabbix-server zabbix-agent apache2
-systemctl enable zabbix-server zabbix-agent apache2
+Создадим базу zabbix для пользователя zabbix    
+sudo -u postgres createdb -O zabbix zabbix  
+На хосте Zabbix сервера импортируем начальную схему и данные.   
+zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix  
+Отредактируем файл /etc/zabbix/zabbix_server.conf  
+sudo vim /etc/zabbix/zabbix_server.conf  
+<img src = "img/1-2.png" width = 60%>      
+Запустим процессы Zabbix сервера и агента, настроим их запуск при загрузке ОС.    
+systemctl restart zabbix-server zabbix-agent apache2    
+systemctl enable zabbix-server zabbix-agent apache2  
 <img src = "img/1-3.png" width = 60%>   
 <img src = "img/1-4.png" width = 60%>  
 http://51.250.46.43/zabbix проверим, все параметры в статусе- ок
@@ -108,8 +108,4 @@ sudo find / -name zabbix_agentd.log
 Установите Zabbix Agent на Windows (компьютер) и подключите его к серверу Zabbix.
 
 Требования к результатам
-Приложите в файл README.md скриншот раздела Latest Data, где видно свободное место на диске C:
-Критерии оценки
-Выполнено минимум 2 обязательных задания
-Прикреплены требуемые скриншоты и тексты
-Задание оформлено в шаблоне с решением и опубликовано на GitHub
+1. Приложите в файл README.md скриншот раздела Latest Data, где видно свободное место на диске C:
