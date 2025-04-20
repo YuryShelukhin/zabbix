@@ -2,35 +2,32 @@
 
 ### Задание 1
 
-
 Установите Zabbix Server с веб-интерфейсом.
 
-Процесс выполнения.
-
+Процесс выполнения:
 1. Выполняя ДЗ, сверяйтесь с процессом отражённым в записи лекции.
 2. Установите PostgreSQL. Для установки достаточна та версия, что есть в системном репозитороии Debian 11.
 3. Пользуясь конфигуратором команд с официального сайта, составьте набор команд для установки последней версии Zabbix с поддержкой PostgreSQL и Apache.
 4. Выполните все необходимые команды для установки Zabbix Server и Zabbix Web Server.  
 
-Требования к результатам  
-
+Требования к результатам:
 1. Прикрепите в файл README.md скриншот авторизации в админке.
 2. Приложите в файл README.md текст использованных команд в GitHub
 
 
 ## Решение 1
 
-1.  Установим PostgreSQL:
-sudo apt install postgresql 
-sudo apt update
+1.  Установим PostgreSQL:  
+sudo apt install postgresql   
+sudo apt update  
 Установим репозиторий Zabbix. Перечень команд возьмем на сайте https://www.zabbix.com/ru/download?zabbix=6.0&os_distribution=debian&os_version=11&components=server_frontend_agent&db=pgsql&ws=apache исходя их конфигурации нашей ВМ.  
-wget https://repo.zabbix.com/zabbix/6.0/debian/pool/main/z/zabbix-release/zabbix-release_latest_6.0+debian11_all.deb
-dpkg -i zabbix-release_latest_6.0+debian11_all.deb  
-apt update  
+sudo wget https://repo.zabbix.com/zabbix/6.0/debian/pool/main/z/zabbix-release/zabbix-release_latest_6.0+debian11_all.deb
+sudo dpkg -i zabbix-release_latest_6.0+debian11_all.deb  
+sudo apt update  
 Установим Zabbix сервер, веб-интерфейс и агент  
 apt install zabbix-server-pgsql zabbix-frontend-php php7.4-pgsql zabbix-apache-conf zabbix-sql-scripts zabbix-agent
 проверим
-sudo systemctl status zabbix-server.service
+sudo systemctl status zabbix-server.service  
 <img src = "img/1-1.png" width = 60%>  
 установлен, но не запущен
 Создайте базу данных
@@ -46,10 +43,11 @@ sudo vim /etc/zabbix/zabbix_server.conf
 Запустим процессы Zabbix сервера и агента и настроим их запуск при загрузке ОС.
 systemctl restart zabbix-server zabbix-agent apache2
 systemctl enable zabbix-server zabbix-agent apache2
-проверим, все параметры в статусе ок
-http://51.250.46.43/zabbix
 <img src = "img/1-3.png" width = 60%>   
-<img src = "img/1-4.png" width = 60%>   
+<img src = "img/1-4.png" width = 60%>  
+http://51.250.46.43/zabbix проверим, все параметры в статусе- ок
+<img src = "img/1-5.png" width = 60%>   
+<img src = "img/1-6.png" width = 60%>   
 
 ---
 
@@ -71,14 +69,37 @@ http://51.250.46.43/zabbix
 3. Приложите в файл README.md скриншот раздела Monitoring > Latest data для обоих хостов, где видны поступающие от агентов данные.
 4. Приложите в файл README.md текст использованных команд в GitHub  
 
-## Решение 2
-1-3. Установим агента
-sudo apt update
-sudo  apt install zabbix-agent
-Запустим процесс Zabbix агент и настром его запуск при загрузке ОС.
-systemctl restart zabbix-agent
-systemctl enable zabbix-agent
+## Решение 2  
 
+1-3. Установим агента  
+sudo apt update  
+sudo  apt install zabbix-agent  
+Запустим процесс Zabbix агент и настром его запуск при загрузке ОС.  
+systemctl restart zabbix-agent   
+systemc status zabbix-agent   
+<img src = "img/2-1.png" width = 60%>    
+добавляем хост    
+<img src = "img/2-2.png" width = 60%>    
+<img src = "img/2-3.png" width = 60%>   
+сохраним и вновь зайдем на хост для начала наблюдения путем добавдения метрик  
+выберем стандартный шаблон  
+<img src = "img/2-4.png" width = 60%>   
+<img src = "img/2-5.png" width = 60%>     
+сервер не соединился с агентом ввиду отсутствия допуска. отредактируем конфигурационный файл  
+sudo find / -name zabbix_agentd.conf  
+sudo vim...  
+<img src = "img/2-6.png" width = 60%>   
+перезапустим и проверим  
+sudo systemctl syatus zabbix-agent.service  
+sudo systemctl status zabbix-agent.service  
+проверим на веб-сервере  
+<img src = "img/2-7.png" width = 60%>     
+<img src = "img/2-8.png" width = 60%>  
+<img src = "img/2-9.png" width = 60%>     
+<img src = "img/2-10.png" width = 60%>  
+проверим логи  
+sudo find / -name zabbix_agentd.log  
+<img src = "img/2-11.png" width = 60%>  
 
 ---
 
