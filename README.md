@@ -46,6 +46,11 @@ sudo vim /etc/zabbix/zabbix_server.conf
 Запустим процессы Zabbix сервера и агента и настроим их запуск при загрузке ОС.
 systemctl restart zabbix-server zabbix-agent apache2
 systemctl enable zabbix-server zabbix-agent apache2
+проверим, все параметры в статусе ок
+http://51.250.46.43/zabbix
+<img src = "img/1-3.png" width = 60%>   
+<img src = "img/1-4.png" width = 60%>   
+
 ---
 
 ### Задание 2
@@ -56,7 +61,7 @@ systemctl enable zabbix-server zabbix-agent apache2
 1. Выполняя ДЗ, сверяйтесь с процессом отражённым в записи лекции.
 2. Установите Zabbix Agent на 2 вирт.машины, одной из них может быть ваш Zabbix Server.
 3. Выполняя ДЗ, сверяйтесь с процессом отражённым в записи лекции.
-4. Добавьте Zabbix Server в список разрешенных серверов ваших Zabbix Agentов.
+4. Добавьте Zabbix Server в список  разрешенных серверов ваших Zabbix Agentов.
 5. Добавьте Zabbix Agentов в раздел Configuration > Hosts вашего Zabbix Servera.
 6. Проверьте, что в разделе Latest Data начали появляться данные с добавленных агентов.  
 
@@ -67,7 +72,12 @@ systemctl enable zabbix-server zabbix-agent apache2
 4. Приложите в файл README.md текст использованных команд в GitHub  
 
 ## Решение 2
-
+1-3. Установим агента
+sudo apt update
+sudo  apt install zabbix-agent
+Запустим процесс Zabbix агент и настром его запуск при загрузке ОС.
+systemctl restart zabbix-agent
+systemctl enable zabbix-agent
 
 
 ---
