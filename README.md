@@ -22,28 +22,28 @@
   2. ВМ  "monitor2" с установленным Zabbix-агентом  (ip 158.160.168.224).  
   <img src = "img/1-0.png" width = 60%>   
    
-1.  Настроим ВМ  "monitor1"^  
+1.  Настроим ВМ  "monitor1"  
 Установим PostgreSQL:  
 sudo apt install postgresql   
 sudo apt update  
-Установим репозиторий Zabbix. Перечень команд возьмем на сайте https://www.zabbix.com/ru/download?zabbix=6.0&os_distribution=debian&os_version=11&components=server_frontend_agent&db=pgsql&ws=apache исходя их конфигурации нашей ВМ.  
+Установим репозиторий Zabbix. Перечень команд возьмем на сайте https://www.zabbix.com/ru/download?zabbix=6.0&os_distribution=debian&os_version=11&components=server_frontend_agent&db=pgsql&ws=apache исходя из конфигурации нашей ВМ.  
 sudo wget https://repo.zabbix.com/zabbix/6.0/debian/pool/main/z/zabbix-release/zabbix-release_latest_6.0+debian11_all.deb
 sudo dpkg -i zabbix-release_latest_6.0+debian11_all.deb  
 sudo apt update  
-Установим Zabbix сервер, веб-интерфейс и агент  
+Установим Zabbix сервер, веб-интерфейс и агент.    
 apt install zabbix-server-pgsql zabbix-frontend-php php7.4-pgsql zabbix-apache-conf zabbix-sql-scripts zabbix-agent  
-проверим
+Проверим.   
 sudo systemctl status zabbix-server.service  
 <img src = "img/1-1.png" width = 60%>  
-установлен, но не запущен  
-Создаlbv базу данных   
-Создадим пользователя zabbix     
+Установлен, но не запущен.    
+Создадим базу данных.         
+Создадим пользователя zabbix.           
 sudo -u postgres createuser --pwprompt zabbix    
-Создадим базу zabbix для пользователя zabbix     
+Создадим базу zabbix для пользователя zabbix.      
 sudo -u postgres createdb -O zabbix zabbix   
 На хосте Zabbix сервера импортируем начальную схему и данные.     
 zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix    
-Отредактируем файл /etc/zabbix/zabbix_server.conf    
+Отредактируем файл /etc/zabbix/zabbix_server.conf.      
 sudo vim /etc/zabbix/zabbix_server.conf    
 <img src = "img/1-2.png" width = 60%>        
 Запустим процессы Zabbix сервера и агента, настроим их запуск при загрузке ОС.      
@@ -51,7 +51,9 @@ systemctl restart zabbix-server zabbix-agent apache2
 systemctl enable zabbix-server zabbix-agent apache2    
 <img src = "img/1-3.png" width = 60%>     
 <img src = "img/1-4.png" width = 60%>    
-http://51.250.46.43/zabbix проверим, все параметры в статусе - ок  
+Авторизуемся по адресу http://158.160.184.132/zabbix/  (Admin/zabbix). 
+<img src = "img/1-5-0.png" width = 60%> 
+ проверим, все параметры в статусе - ок  
 <img src = "img/1-5.png" width = 60%>     
 <img src = "img/1-6.png" width = 60%>   
 
@@ -77,32 +79,35 @@ http://51.250.46.43/zabbix проверим, все параметры в ста
 
 ## Решение 2  
 
-1-3. Установим агента  
+1-3. В задании №1 был установлен Zabbix-агент на ВМ "monitor1" одновременно с установкой Zabbix-сервера.    
+Установим Zabbix-агент на  ВМ  "monitor2".  
 sudo apt update  
 sudo  apt install zabbix-agent  
-Запустим процесс Zabbix агент и настром его запуск при загрузке ОС.  
+Запустим процесс Zabbix-агент и настроим его запуск при загрузке ОС.  
 systemctl restart zabbix-agent   
 systemc status zabbix-agent   
 <img src = "img/2-1.png" width = 60%>    
-добавляем хост    
-<img src = "img/2-2.png" width = 60%>    
-<img src = "img/2-3.png" width = 60%>   
-сохраним и вновь зайдем на хост для начала наблюдения путем добавления метрик  
-выберем стандартный шаблон  
-<img src = "img/2-4.png" width = 60%>   
-<img src = "img/2-5.png" width = 60%>     
-сервер не соединился с агентом ввиду отсутствия допуска. отредактируем конфигурационный файл  
+Отредактируем конфигурационный файл  ВМ  "monitor2".      
 sudo find / -name zabbix_agentd.conf  
 sudo vim...  
 <img src = "img/2-6.png" width = 60%>   
-перезапустим и проверим  
-sudo systemctl syatus zabbix-agent.service  
+Перезапустим и проверим.   
 sudo systemctl status zabbix-agent.service  
-проверим на веб-сервере  
+Проверим конфигурационный файл  ВМ  "monitor1".      
+sudo find / -name zabbix_agentd.conf  
+sudo vim...  
+В этом конфигурационном файле оставим адрес по умолчанию (127.0.0.1), так как zabbix-агент установлен на одной машине с zabbix-сервером.
+<img src = "img/2-6-1.png" width = 60%>  
+Добавим хосты zabbix-агентов в раздел Configuration > Hosts вашего Zabbix Servera.   
+<img src = "img/2-2.png" width = 60%>    
+<img src = "img/2-3.png" width = 60%>   
+сохраним и вновь зайдем на хост для начала наблюдения путем добавления метрик  
+выберем стандартный шаблон для обеих ВМ 
+<img src = "img/2-4.png" width = 60%>   
+<img src = "img/2-5.png" width = 60%>     
+Проверим данные с агентов в разделе Latest Data и в Dashbord.    
 <img src = "img/2-7.png" width = 60%>     
 <img src = "img/2-8.png" width = 60%>  
-<img src = "img/2-9.png" width = 60%>     
-<img src = "img/2-10.png" width = 60%>  
 проверим логи  
 sudo find / -name zabbix_agentd.log  
 <img src = "img/2-11.png" width = 60%>  
