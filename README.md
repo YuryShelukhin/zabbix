@@ -17,7 +17,13 @@
 
 ## Решение 1
 
-1.  Установим PostgreSQL:  
+### Для решения заданий использованы 2-е виртуальные машины в Яндекс-облаке:
+  1. ВМ  "monitor1" с установленными Zabbix-сервером и  Zabbix-агентом  (ip 158.160.184.132);    
+  2. ВМ  "monitor2" с установленным Zabbix-агентом  (ip 158.160.168.224).  
+  <img src = "img/1-0.png" width = 60%>   
+   
+1.  Настроим ВМ  "monitor1"^  
+Установим PostgreSQL:  
 sudo apt install postgresql   
 sudo apt update  
 Установим репозиторий Zabbix. Перечень команд возьмем на сайте https://www.zabbix.com/ru/download?zabbix=6.0&os_distribution=debian&os_version=11&components=server_frontend_agent&db=pgsql&ws=apache исходя их конфигурации нашей ВМ.  
@@ -29,24 +35,24 @@ apt install zabbix-server-pgsql zabbix-frontend-php php7.4-pgsql zabbix-apache-c
 проверим
 sudo systemctl status zabbix-server.service  
 <img src = "img/1-1.png" width = 60%>  
-установлен, но не запущен
-Создаlbv базу данных  
-Создадим пользователя zabbix    
-sudo -u postgres createuser --pwprompt zabbix  
-Создадим базу zabbix для пользователя zabbix    
-sudo -u postgres createdb -O zabbix zabbix  
-На хосте Zabbix сервера импортируем начальную схему и данные.   
-zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix  
-Отредактируем файл /etc/zabbix/zabbix_server.conf  
-sudo vim /etc/zabbix/zabbix_server.conf  
-<img src = "img/1-2.png" width = 60%>      
-Запустим процессы Zabbix сервера и агента, настроим их запуск при загрузке ОС.    
-systemctl restart zabbix-server zabbix-agent apache2    
-systemctl enable zabbix-server zabbix-agent apache2  
-<img src = "img/1-3.png" width = 60%>   
-<img src = "img/1-4.png" width = 60%>  
-http://51.250.46.43/zabbix проверим, все параметры в статусе- ок
-<img src = "img/1-5.png" width = 60%>   
+установлен, но не запущен  
+Создаlbv базу данных   
+Создадим пользователя zabbix     
+sudo -u postgres createuser --pwprompt zabbix    
+Создадим базу zabbix для пользователя zabbix     
+sudo -u postgres createdb -O zabbix zabbix   
+На хосте Zabbix сервера импортируем начальную схему и данные.     
+zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix    
+Отредактируем файл /etc/zabbix/zabbix_server.conf    
+sudo vim /etc/zabbix/zabbix_server.conf    
+<img src = "img/1-2.png" width = 60%>        
+Запустим процессы Zabbix сервера и агента, настроим их запуск при загрузке ОС.      
+systemctl restart zabbix-server zabbix-agent apache2      
+systemctl enable zabbix-server zabbix-agent apache2    
+<img src = "img/1-3.png" width = 60%>     
+<img src = "img/1-4.png" width = 60%>    
+http://51.250.46.43/zabbix проверим, все параметры в статусе - ок  
+<img src = "img/1-5.png" width = 60%>     
 <img src = "img/1-6.png" width = 60%>   
 
 ---
